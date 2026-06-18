@@ -27,8 +27,8 @@ Para poder explorar de manera más específica los datos se realizarán análisi
 
 ## Modelo(s) seleccionado(s) y estrategia de evaluación claramente explicados
 
-Se seleccionó un modelo de Regresión Lineal, utilizando como variable objetivo la calificación IMDb (imdb_rating). El modelo buscará estimar la puntuación de un episodio a partir de las características disponibles en el conjunto de datos, identificando las variables que presentan mayor influencia sobre la valoración de los espectadores.
-Para evaluar su desempeño se utilizará validación cruzada K-Fold con k=5, técnica que permite obtener una estimación más robusta de la capacidad predictiva del modelo (mejor que dividir en 80/20 para evitar perder información evaluando el modelo con las 750 filas completas en diferentes turnos). En cada iteración, cuatro particiones serán utilizadas para entrenamiento y una para validación, repitiendo el proceso hasta que todas las observaciones hayan sido evaluadas. El rendimiento se analizará mediante las métricas R², MAE y RMSE.
+Se seleccionó un modelo de Regresión Lineal, utilizando como variable objetivo la calificación IMDb (imdb_rating). El modelo buscará estimar la puntuación de un episodio a partir de las características disponibles en el conjunto de datos, analizando la relación entre las variables predictoras y la calificación de IMDb, así como la capacidad del modelo para estimar dicha puntuación.
+Para la evaluación, el conjunto de datos se dividirá en entrenamiento (80%) y prueba (20%). Posteriormente, sobre el conjunto de entrenamiento se aplicará validación cruzada K-Fold con k=5, con el fin de obtener una estimación más robusta del desempeño del modelo antes de realizar la evaluación final sobre el conjunto de prueba. El rendimiento se analizará mediante las métricas R², MAE y RMSE.
 
 ## Justifiación de modelo: ventajas, limitaciones y pertinencia.
 
