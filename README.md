@@ -43,7 +43,7 @@ Entre sus principales ventajas se encuentran su simplicidad de implementación y
 El proyecto parte con la preparación del entorno en Python, cargandao Pandas y NumPy para ordenar las tablas y hacer cálculos, y Matplotlib junto con Seaborn para generar los gráficos. Para la parte del entrenamiento y predicción se incluyen los elementos de la librería Scikit-Learn, además dentro de esta se incluye la validación cruzada y el Grid para buscar los smejores parámetros del modelo. También se incorporó OneHotEncoder y StandardScaler para transformar los nombres de los directores y escritores que son categóricos, usando ColumnTransformer y el Pipeline para juntar todo el preprocesamiento de la data así como los regularizadores que penalizarán el overfit si es que hay. Finalmente se incluyen las métricas de errores; el error cuadrático medio (MSE) y error absoluto medio (MAE). <br>
 Luego de configurar las librerías, se cargó el dataset hasta la fila 10, las filas desplegadas permiten ver el orden de las columnas también y su estructura como se aprecia en la imagen:
 
-![Vista inicial del dataset](head(10).png)
+![Vista inicial del dataset](imagenes/head(10).png)
 
 ### Paso 2: EDA
 
@@ -53,7 +53,7 @@ El dataset de capítulos de Los Simpsons contiene 14 columnas las cuales fueron 
 
 Siguiendo con la exploración inicial de la data, la siguiente imagen presenta la descripción detalladas de las columnas y sus estadísticos:
 
-![Descripción del dataset](descripciondata.png)
+![Descripción del dataset](imagenes/descripciondata.png)
 
 * **count**: Muestra la cantidad de datos válidos que hay. La mayoría de las columnas dicen 747.000000 (747 episodios), pero us_viewers_in_millions dice 746.000000. Significa que hay 1 episodio al que le falta el dato de audiencia, tal como se vio en el estudio de datos nulos y su cantidad. 
 
@@ -104,7 +104,7 @@ Para entender cómo se relacionan la recepción crítica (IMDB y TMDB) y la popu
 * Boxplot 3: Calificaciones de Audiencia en millones.
 * Boxplot 4: Calificaciones de Distribución de votos.
 
-![Descripción del dataset](boxplot.png)
+![Descripción del dataset](imagenes/boxplot.png)
 
 Se realizaron boxplots únicamente para las variables numéricas continuas que aportaban algo sustancial (imdb_rating, tmdb_rating, us_viewers_in_millions y tmdb_vote_count), ya que son las más adecuadas para analizar su distribución y detectar posibles valores atípicos. Las variables discretas, como el número de temporada o de episodio, no aportan información relevante mediante este tipo de gráfico.
 
@@ -122,29 +122,29 @@ El boxplot muestra que la mayor parte de los episodios concentra entre aproximad
 
 Siguiendo con el análisis para contrastar la opinión de la audiencia con el fenómeno cultural de la serie, se graficó una línea de tendencia del puntaje promedio en IMDb a lo largo de todas las temporadas. Esta visualización busca identificar con precisión matemática el periodo conocido como la "época dorada" de Los Simpson y determinar el punto exacto en el que las temporadas empezaron a perder audiencia.
 
-![Línea de audiencia vs temporada](goldenera.png)
+![Línea de audiencia vs temporada](imagenes/goldenera.png)
 
 El gráfico muestra el promedio de rating en IMDb por temporada para identificar la época dorada de la serie. Todo comienza con la "Época Dorada" (temporadas 1 a 8), alcanzando su excelencia entre las temporadas 4 y 7, con un pico histórico en la temporada 7 cercano a los 8.3 puntos. Luego sigue el inicio del declive cuando empieza a bajar la audiencia (temporadas 9 a 12), y la nota cae a 7.5 en la décima temporada y se estanca en 7.3 en la onceava, marcando el fin de la era clásica. Finalmente, la serie entra en su declive definitivo (temporadas 13 a 34), manteniéndose en un rango bajo de entre 7.0 y 6.5, llegando a lo mínimo en la temporada 30 con un promedio de 6.2 para luego mostrar un leve repunte.
 
 Siguiendo con el análisis de calidad, se generó un gráfico para identificar a los directores mejor evaluados en IMDb y descubrir quiénes están detrás de los capítulos con las notas más altas de la serie.
 
-![Directores mejor evaluados](top_directores.png)
+![Directores mejor evaluados](imagenes/top_directores.png)
 
 El gráfico demuestra que dirigir más episodios no asegura una mejor calificación en Los Simpsons, ya que realizadores como Mark Kirkland, Steven Dean Moore, Bob Anderson o Matthew Nastuk acumulan el mayor volumen del show pero quedan fuera de la lista de los mejor puntuados. En contraste, las notas de excelencia sobre los 8.0 puntos se concentran en los directores de la época dorada. Por su parte, David Silverman se mantiene en un punto intermedio de alto volumen con un promedio de 7.8, superando por mucho la media general del show de 7.15, lo que comprueba que las calificaciones altas dependen de la época en la serie más que de la cantidad de trabajo producido.
 
 De igual manera se realizó algo similiar con los escritores:
 
-![Escritores mejor evaluados](top_escritores.png)
+![Escritores mejor evaluados](imagenes/top_escritores.png)
 
 Bill Oakley y Josh Weinstein lideran el análisis de guionistas con un promedio de 8.25, seguidos por Mike Scully y el dúo de Kogen & Wolodarsky, mientras John Swartzwelder destaca por mantener un alto nivel (7.9) a pesar de ser el más frecuente. En contraste nuevamente, una alta producción de episodios no garantiza calidad, evidenciado por el promedio de 7.15 de Al Jean, marcando el fracaso de la era moderna.
 
 También, se realizó un scatterplot que revela una relación clara entre la audiencia y la calificación de los episodios, mostrando que ambas variables avanzan juntas en los rangos bajos y medios: a medida que el público crece de 1 a 15 millones, las notas tienden a subir de forma notable. Esto explica por qué los capítulos modernos se concentran en la parte inferior izquierda con bajas audiencias y notas de 6.0 a 7.0, mientras que la masa de la era clásica se posiciona en la zona central superior, combinando entre 12 y 20 millones de espectadores con promedios sobre los 8.0 puntos. Sin embargo, al superar el umbral de los 25 millones de personas, esta tendencia lineal se rompe y estos episodios se estabilizan en un rango de 7.5 a 8.5. Este comportamiento demuestra que un éxito masivo en sintonía no asegura una mejor recepción por parte de la crítica.
 
-![Escritores mejor evaluados](scatterplotEDA.png)
+![Escritores mejor evaluados](imagenes/scatterplotEDA.png)
 
 Finalmente, se hizo una matriz de correlación para mostrar posibles relaciones entre variables no estudiadas:
 
-![Matriz de correlación](matrizcorr.png)
+![Matriz de correlación](imagenes/matrizcorr.png)
 
 Esto muestra que las variables IMDb Rating, TMDb Rating y TMDb Vote Count presentan correlaciones positivas entre sí. Esto indica que en general los episodios con mejores calificaciones también suelen recibir una mayor cantidad de votos. De igual manera, US Viewers in Millions también se relaciona positivamente con estas variables, sugiriendo que los episodios con mayor audiencia tienden a obtener mejores valoraciones y más participación por parte de los usuarios. En cambio, variables como Season, ID y Number in Series presentan correlaciones negativas con la audiencia y las calificaciones. Esto significa que dentro de este conjunto de datos, a medida que avanzan las temporadas y aumenta el número de episodio en la serie, se observa una tendencia a disminuir tanto la audiencia como las valoraciones.
 
@@ -160,7 +160,7 @@ Durante la feature selection y configuración del preprocesamiento, el proceso c
 
 Durante la fase de entrenamiento, se utilizó el Pipeline para conectar directamente la preparación de los datos con el algoritmo de regresión lineal.
 
-![Pipeline](pipelinetrain.png)
+![Pipeline](imagenes/pipelinetrain.png)
 
 Antes del ajuste final, se aplicó una validación cruzada en 5 folds mediante *cross_val_score*, midiendo el rendimiento con el coeficiente R². Se evaluó entonces el pipeline de esta forma para evitar el data leakage. Finalmente, el modelo se entrenó de forma definitiva con el método *.fit()* utilizando el 80% de los datos. 
 
@@ -189,17 +189,17 @@ A partir de los resultados de la validación cruzada, se observa que Elastic Net
 
 Para evaluar la precisión del modelo desde dos ángulos diferentes, se analizaron de forma conjunta las métricas MAE y RMSE. Por un lado, el MAE que mide qué tan lejos están en promedio las predicciones del modelo de los valores reales del dataset, dio un resultado de *0.424*; para esto se calculó la desviación promedio directamente en la escala de las calificaciones de IMDb sin alterarse por datos aislados, mientras que el RMSE que mide el error promedio del modelo arrojó *0.532*. Al combinar este análisis con el coeficiente de determinación de R² = *0.562*, se observa que el modelo logra justificar el 56.2% de la variación en las notas de la plataforma a través de los datos de audiencia y producción. Esto demuestra que el predictor funciona bien a pesar de la subjetividad de la audiencia general.
 
-![scatterplot_LR](scatterplotLR.png)
+![scatterplot_LR](imagenes/scatterplotLR.png)
 
 El gráfico de dispersión confirma que el modelo de regresión lineal funciona de manera consistente, ya que los puntos azules se agrupan en torno a la línea diagonal roja que representa las predicciones exactas. Esta distribución valida los resultados numéricos obtenidos, donde el indicador R² de *0.562* demuestra que las variables utilizadas explican el *56.2*% de la variación en las notas. 
 
 Al analizar igualmente los coeficientes obtenidos por el modelo, se identificaron las variables que más influyen en la predicción del puntaje, tanto a nivel temporal como por el impacto de los equipos creativos:
 
-![Coeficientes](coefi.png)
+![Coeficientes](imagenes/coefi.png)
 
 Como se muestra en la gráfica, el num_season tiene una fuerte influencia positiva en el rating de los episodios a medida que avanzan las temporadas. Fuera de estas métricas temporales, el impacto de los creadores es disferente: las variables asociadas a los guiones de Rob & Johnny LaZebnik (+1.56) y Carolyn Omine, Ryan Koh & Matt Selman (+1.55) presentan los coeficientes positivos más altos respecto a la categoría de referencia del One-Hot Encoding, indicando una asociación con mayores valores predichos de IMDb Rating. Por otro lado, el guión de Neil Campbell (-1,38) y la dirección de Mark Ervin (-1,21) presentan los coeficientes negativos más grandes respecto a la referencia.
 
-![Gráfica de coeficientes](coeficientes.png)
+![Gráfica de coeficientes](imagenes/coeficientes.png)
 
 ### Paso 9: Evaluación comparativa con Elastic Net:
 
@@ -207,7 +207,7 @@ Dado que Elastic Net obtuvo el mejor desempeño durante la etapa de validación 
 
 Al comparar ambos modelos, se observa que la incorporación de la regularización mediante Elastic Net mejoró el desempeño predictivo respecto a la regresión lineal sin regularización. El coeficiente de determinación (R²) aumentó de 0.562 (LR sin penalización) a 0.600, indicando que el modelo logra explicar una mayor proporción de la variabilidad de la variable objetivo. Asimismo, el MAE disminuyó de 0.424 a 0.390 y el RMSE de 0.532 a 0.508, lo que significa que, en promedio, las predicciones presentan un menor error. Estos resultados sugieren que la regularización ayudó a reducir el sobreajuste y mejoró la capacidad de generalización del modelo sobre datos no vistos.
 
-![scatterEN](scatterplotEN.png)
+![scatterEN](imagenes/scatterplotEN.png)
 
 Además, la gráfica de dispersión muestra la relación entre las calificaciones reales de IMDb y las predicciones calculadas por el modelo Elastic Net. En la imagen se observa que la mayoría de los puntos se agrupan de manera muy similar al scatterplot de LR, mas en este caso siendo respaldado por un indicador R² = *0.600* y un nivel de error RMSE = *0.508*, es mejor y distinto. Esto demuestra que el sistema tiende a moderar las calificaciones extremas y se concentra en asegurar un cálculo preciso y estable para la gran mayoría de los episodios ubicados en la zona central de la distribución.
 
