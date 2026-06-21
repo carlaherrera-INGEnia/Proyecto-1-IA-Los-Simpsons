@@ -40,14 +40,13 @@ Entre sus principales ventajas se encuentran su simplicidad de implementación y
 
 ### Paso 1: Carga de librerías y data:
 
-El proyecto parte con la preparación del entorno en Python, cargandao Pandas y NumPy para ordenar las tablas y hacer cálculos, y Matplotlib junto con Seaborn para generar los gráficos. Para la parte del entrenamiento y predicción se incluyen los elementos de la librería Scikit-Learn, además dentro de esta se incluye la validación cruzada y el Grid para buscar los smejores parámetros del modelo. También se incorporó OneHotEncoder y StandardScaler para transformar los nombres de los directores y escritores que son categóricos, usando ColumnTransformer y el Pipeline para juntar todo el preprocesamiento de la data así como los regularizadores que penalizarán el overfit si es que hay. Finalmente se importaron las métricas MSE y MAE para medir el error de las predicciones realizadas por el modelo. <br>
-Luego de configurar las librerías, se cargó el dataset hasta la fila 10, las filas desplegadas permiten ver el orden de las columnas también y su estructura como se aprecia en la imagen:
+El proyecto comenzó con la preparación del entorno en Python, utilizando Pandas y NumPy para la manipulación de datos, Matplotlib y Seaborn para la generación de gráficos, y Scikit-Learn para el entrenamiento y evaluación del modelo. De esta librería se emplearon herramientas como GridSearchCV, validación cruzada, OneHotEncoder, StandardScaler, ColumnTransformer y Pipeline para el preprocesamiento y la optimización del modelo, además de las métricas MSE y MAE para evaluar su desempeño. Una vez configuradas las librerías, se cargó el dataset y se visualizaron las primeras 10 filas para revisar la estructura y organización de las columnas.
 
 ![Vista inicial del dataset](imagenes/head(10).png)
 
 ### Paso 2: EDA
 
-El dataset de capítulos de Los Simpsons contiene 14 columnas las cuales fueron detalladas en la descripción del dataset más arriba. Además, hay 747 filas correspondiente a 747 episodios de distintas temporadas. Al revisar la integridad del dataset mediante *data.isnull().sum()*, se confirma que los datos están prácticamente completos, registrando un único valor nulo en la columna *us_viewers_in_millions*, el cual corresponde a la audiencia en EE.UU. de un solo episodio. Por otra parte, al ejecutar *data.duplicated().sum()* el resultado es 0, lo que demuestra que no existen filas idénticas clonadas en su totalidad. Cabe destacar eso si que las repeticiones en columnas como directores, guionistas o temporadas son completamente normales ya que un mismo director trabaja en varios episodios y las temporadas tienen muchos capítulos. 
+El dataset contiene 747 episodios y 14 columnas. Al revisar su calidad, se encontró un único valor nulo en la columna us_viewers_in_millions, mientras que no existen filas duplicadas. Las repeticiones de directores, guionistas o temporadas corresponden al contenido del dataset y no representan errores, ya que un mismo director o escritor participa en varios episodios.
 
 ### Descripción del dataset
 
@@ -65,7 +64,7 @@ Siguiendo con la exploración inicial de la data, la siguiente imagen presenta l
 
 * **max (Máximo)**: la serie al momento de la creación de este dataset tiene un máximo de 34 temporadas, su capítulo más visto tuvo 33.6 millones de espectadores y el capítulo mejor evaluado de la historia llegó a 9.3 en IMDb.
 
-* **Respecto a los percentiles de 25%, 50% y 75%**: el análisis del imdb_rating muestra que la calidad de la serie se concentra en rangos bien marcados. El 25% de los episodios tiene una nota de 6.60 o menos, lo que representa las etapas con menor desempeño. Por otro lado, la amediana es la mitad del show y se ubica exactamente en 7.00; al ser una nota más baja que el promedio general de 7.15, se demuestra que un grupo de capítulos clásicos y muy exitosos empuja la media hacia arriba. Finalmente, el 75% de la serie alcanza como máximo un 7.70, lo que significa que solo un 25% de los episodios logra superar esa barrera.
+* **Respecto a los percentiles de 25%, 50% y 75%**: el 25% de los episodios tiene una calificación de 6.60 o menos, mientras que la mediana es 7.00. Como esta última es inferior al promedio (7.15), se observa que algunos capítulos con calificaciones muy altas elevan la media. Por último, el 75% de los episodios alcanza como máximo 7.70, por lo que solo el 25% supera esa puntuación.
 
 A continuación, se estudiaron las variables categóricas del dataset de directores y escritores, desplegando la cantidad exacta de episodios dirigidos:
 
@@ -106,7 +105,7 @@ Para entender cómo se relacionan la recepción crítica (IMDB y TMDB) y la popu
 
 ![Descripción del dataset](imagenes/boxplot.png)
 
-Se realizaron boxplots únicamente para las variables numéricas continuas que aportaban algo sustancial (imdb_rating, tmdb_rating, us_viewers_in_millions y tmdb_vote_count), ya que son las más adecuadas para analizar su distribución y detectar posibles valores atípicos. Las variables discretas, como el número de temporada o de episodio, no aportan información relevante mediante este tipo de gráfico.
+Se realizaron boxplots únicamente para las variables numéricas continuas (imdb_rating, tmdb_rating, us_viewers_in_millions y tmdb_vote_count), ya que permiten analizar su distribución e identificar posibles valores atípicos. En cambio, las variables discretas, como el número de temporada o de episodio, no entregan información relevante mediante este tipo de gráfico.
 
 1. Distribución de Calificaciones IMDb:
 El boxplot muestra que las calificaciones de IMDb presentan una distribución donde la mediana es de 7.0 y el promedio de 7.15, lo que indica que las puntuaciones se mantienen cercanas entre sí. El 50 % de los episodios tiene calificaciones entre 6.6 y 7.7 (primer y tercer cuartil). Además, las calificaciones alcanzan un máximo de 9.3, mientras que el límite inferior llega hasta 5.0. También se observan dos valores atípicos, con calificaciones de 4.4 y 4.0, correspondientes a los episodios con menor puntuación.
@@ -150,11 +149,11 @@ La matriz de correlación muestra que las variables relacionadas con IMDb y TMDb
 
 ### Paso 3: Feature Engineering:
 
-A continuación, se detalla la etapa de Feature Engineering, donde se prepararon las variables seleccionadas antes de pasarlas a los modelos de machine learning. Durante esta etapa, los datos se limpiaron y estructuraron para permitir que el modelo de regresión lineal procesara la información correctamente. En primer lugar, se eliminaron los identificadores, textos y formatos de fecha como las variables id, title, description, original_air_date y production_code debido a que el modelo no puede trabajar directamente con variables de texto, por lo que estas debieron transformarse. Asimismo, se descartó la columna tmdb_rating por su alta correlación con la métrica de IMDb, y se aseguró que el modelo aprenda de los factores de producción en lugar de depender de otra calificación externa. Posteriormente, se borraron las filas con valores nulos encontrados en el EDA en la variable de audiencia us_viewers_in_millions para evitar fallas. Finalmente, el proceso concluyó con la división del dataset en X e y.
+A continuación, se realizó la etapa de Feature Engineering, en la que se prepararon las variables antes del entrenamiento del modelo. Se eliminaron las columnas id, title, description, original_air_date y production_code, ya que no eran adecuadas como variables de entrada. Además, se descartó tmdb_rating por su alta correlación con imdb_rating, con el fin de reducir la redundancia entre variables. Posteriormente, se eliminaron las filas con valores nulos en us_viewers_in_millions y, finalmente, el dataset se dividió en las variables predictoras (X) y la variable objetivo (y).
 
 ### Paso 4: Feature Selection: 
 
-Durante la feature selection y configuración del preprocesamiento, el proceso continuó con la división del conjunto de datos mediante la función *train_test_split*, lo que permitió asignar un 80% de los datos para el entrenamiento y reservar el 20% restante para el grupo de prueba. Justo después de separar los grupos, se prepararon los datos mediante la herramienta *ColumnTransformer*, dividiendo las variables predictoras según su tipo de dato. Por una parte, se agruparon las variables numéricas (que incluyen la temporada, el número de episodio, el número global de la serie y la audiencia en millones) para normalizarlas con StandardScaler. Por otra parte, las variables de texto con los nombres de los directores y guionistas se trataron como columnas categóricas y se transformaron con OneHotEncoder. Para que el modelo pudiera procesar estos nombres.
+Durante la preparación del modelo, el dataset se dividió con train_test_split, destinando el 80% de los datos para entrenamiento y el 20% para prueba. Posteriormente, mediante ColumnTransformer, las variables numéricas (temporada, número de episodio, número global y audiencia) se normalizaron con StandardScaler, mientras que las variables categóricas correspondientes a directores y guionistas se transformaron con OneHotEncoder.
 
 ### Paso 5: Entrenamiento:
 
@@ -183,11 +182,11 @@ Al comparar los resultados obtenidos mediante validación cruzada, tanto Ridge c
 
 ### Paso 7: Testeo de Regresión Lineal:
 
-A partir de los resultados de la validación cruzada, se observa que Elastic Net es el algoritmo que mejor controla el overfitting al balancear las variables. Sin embargo, para establecer un "caso base" de comparación, se avanzará primero con el testeo de la Regresión Lineal clásica (sin regularizadores) para analizar su rendimiento final puro, para luego contrastarlo definitivamente con los resultados optimizados de Elastic Net. Por tanto en esta fase se evalúa el modelo en el conjunto de test pasándolo por el pipeline para ver cómo generaliza.
+A partir de los resultados de la validación cruzada, se observa que Elastic Net es el algoritmo que mejor controla el overfitting al balancear las variables. Sin embargo, para establecer un "caso base" de comparación, se avanzará primero con el testeo de la Regresión Lineal clásica (sin regularizadores) para analizar su rendimiento final, para luego contrastarlo definitivamente con los resultados optimizados de Elastic Net. Por tanto en esta fase se evalúa el modelo en el conjunto de test pasándolo por el pipeline para ver cómo generaliza.
 
 ### Paso 8: Visualización de resultados Y Métricas: Regresión lineal:
 
-Para evaluar la precisión del modelo desde dos ángulos diferentes, se analizaron de forma conjunta las métricas MAE y RMSE. Por un lado, el MAE que mide qué tan lejos están en promedio las predicciones del modelo de los valores reales del dataset, dio un resultado de *0.424*; para esto se calculó la desviación promedio directamente en la escala de las calificaciones de IMDb sin alterarse por datos aislados, mientras que el RMSE que mide el error promedio del modelo arrojó *0.532*. Al combinar este análisis con el coeficiente de determinación de R² = *0.562*, se observa que el modelo logra justificar el 56.2% de la variación en las notas de la plataforma a través de los datos de audiencia y producción. Esto demuestra que el predictor funciona bien a pesar de la subjetividad de la audiencia general.
+Para evaluar el desempeño del modelo se utilizaron las métricas MAE, RMSE y R². El modelo obtuvo un MAE de 0.424 y un RMSE de 0.532, lo que indica que las predicciones presentan un error promedio cercano en la escala de calificaciones de IMDb. Además, el coeficiente de determinación R² fue de 0.562, por lo que el modelo explica aproximadamente el 56.2% de la variabilidad de las calificaciones a partir de las variables utilizadas. Estos resultados indican que el modelo posee una capacidad predictiva moderada, aunque existen otros factores que también influyen en la calificación de los episodios.
 
 ![scatterplot_LR](imagenes/scatterplotLR.png)
 
